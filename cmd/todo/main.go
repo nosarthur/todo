@@ -25,20 +25,20 @@ type RmCmd struct {
 }
 
 type args struct {
-	Add  *AddCmd  `arg:"subcommand:add" help:"Add a task"`
-	List *ListCmd `arg:"subcommand:list"`
-	Rm   *RmCmd   `arg:"subcommand:rm"`
+	Add  *AddCmd  `arg:"subcommand:add" help:"Add a todo"`
+	List *ListCmd `arg:"subcommand:list" help:"List all todos"`
+	Rm   *RmCmd   `arg:"subcommand:rm" help:"Remove todos by indices"`
 }
 
 func (args) Version() string {
-	return "todo 0.1.0"
+	return "todo 0.1.1"
 }
 func main() {
 	d, err := homedir.Dir()
 	if err != nil {
 		panic(err)
 	}
-	dbPath := filepath.Join(d, "my_task.db")
+	dbPath := filepath.Join(d, "todos.db")
 	db.MustInit(dbPath)
 
 	var args args

@@ -17,7 +17,7 @@ func Add(task string) error {
 	return db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket(bucketName)
 		t := time.Now()
-		return b.Put([]byte(t.Format("2006-01-02T22:08:41")), []byte(task))
+		return b.Put([]byte(t.Format(time.RFC3339)), []byte(task))
 	})
 }
 
@@ -29,7 +29,12 @@ func List() error {
 		c := tx.Bucket(bucketName).Cursor()
 		i := 1
 		for k, v := c.First(); k != nil; k, v = c.Next() {
-			fmt.Printf("%d. %s\n", i, v)
+			creationTime, err := time.Parse(time.RFC3339, string(k))
+			if err != nil {
+				panic(err)
+			}
+			duration := time.Now().Sub(creationTime)
+			fmt.Printf("%d. %s => day %.f\n", i, v, duration.Hours()/24)
 			i++
 		}
 		return nil
